@@ -1,0 +1,41 @@
+.top-nav {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  padding: 0 var(--gutter) 0 var(--content-left);
+}
+
+/* On the home screen the pill overlaps the bottom of the hero, left-aligned with its text */
+.top-nav--hero {
+  justify-content: flex-start;
+  margin-top: -3.2rem;
+}
+
+.top-nav__pill {
+  display: flex;
+  gap: 0.3rem;
+  padding: 0.35rem;
+  border-radius: 3rem;
+  background: rgba(34, 36, 42, 0.88);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0.6rem 2rem rgba(0, 0, 0, 0.55);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 9.5rem;
+  height: 3.6rem;
+  padding: 0 2rem;
+  border-radius: 1.8rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.tab.is-active {
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--text);
+}

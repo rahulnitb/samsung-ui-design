@@ -1,0 +1,170 @@
+.player {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: #000;
+}
+
+.player__art,
+.player__app-bg {
+  position: absolute;
+  inset: 0;
+}
+
+.player__art {
+  transform: scale(1.02);
+}
+
+/* slow drift so "playback" feels alive */
+.player.is-playing .player__art {
+  animation: player-drift 24s ease-in-out infinite alternate;
+}
+
+@keyframes player-drift {
+  to {
+    transform: scale(1.12) translateX(-2%);
+  }
+}
+
+.player__app-bg {
+  filter: brightness(0.35) saturate(0.8);
+}
+
+.player__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.15) 45%, rgba(0, 0, 0, 0.6) 100%);
+}
+
+.player__top {
+  position: absolute;
+  top: 4rem;
+  left: 6rem;
+  right: 6rem;
+}
+
+.player__tag {
+  display: inline-block;
+  padding: 0.35rem 0.9rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.18);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.player__tag.is-live {
+  background: var(--live);
+}
+
+.player__title {
+  margin-top: 1rem;
+  font-size: 4.4rem;
+  font-weight: 800;
+}
+
+.player__subtitle {
+  margin-top: 0.6rem;
+  font-size: 1.7rem;
+  color: var(--text-dim);
+}
+
+.player__app {
+  position: absolute;
+  inset: 0 0 12rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.player__app-icon {
+  display: grid;
+  place-items: center;
+  width: 14rem;
+  height: 14rem;
+  border-radius: 50%;
+  font-size: 3.6rem;
+  font-weight: 800;
+  box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.6);
+  animation: app-launch 1.2s var(--ease) infinite alternate;
+}
+
+@keyframes app-launch {
+  to {
+    transform: scale(1.05);
+  }
+}
+
+.player__paused {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 9rem;
+  height: 9rem;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  font-size: 4rem;
+  transform: translate(-50%, -50%);
+}
+
+.player__bottom {
+  position: absolute;
+  left: 6rem;
+  right: 6rem;
+  bottom: 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.4rem;
+}
+
+.player__timeline {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  width: 100%;
+  font-size: 1.35rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.player__timeline .progress {
+  flex: 1;
+  height: 0.55rem;
+}
+
+.player__controls {
+  display: flex;
+  gap: 2.4rem;
+  padding-bottom: 2.4rem;
+}
+
+.round-button {
+  display: grid;
+  place-items: center;
+  width: 6.4rem;
+  height: 6.4rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 2.4rem;
+}
+
+.round-button__label {
+  position: absolute;
+  top: calc(100% + 0.8rem);
+  left: 50%;
+  font-size: 1.2rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--text);
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: opacity var(--dur) var(--ease);
+}
+
+.round-button.is-focused .round-button__label {
+  opacity: 1;
+}

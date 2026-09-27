@@ -1,0 +1,49 @@
+/*
+ * The whole UI is sized in rem. The root font size scales with the viewport so the
+ * layout keeps 1920×1080 proportions: 16px at 1080p, ~10.7px at 720p, 32px at 4K.
+ */
+:root {
+  font-size: clamp(8px, min(calc(100vw / 120), calc(100vh / 67.5)), 48px);
+
+  --bg: #000;
+  --surface: #14161b;
+  --surface-2: #1f2229;
+  --surface-3: #2b2f38;
+  --text: #f4f5f7;
+  --text-dim: rgba(244, 245, 247, 0.68);
+  --text-faint: rgba(244, 245, 247, 0.44);
+  --accent: #2f7bff;
+  --live: #ff3b4a;
+
+  --sidebar-w: 7rem;
+  --sidebar-w-open: 21rem;
+  --gutter: 3.5rem;
+  --content-left: calc(var(--sidebar-w) + var(--gutter));
+
+  --radius-sm: 0.7rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+
+  --ease: cubic-bezier(0.22, 0.8, 0.24, 1);
+  --dur: 200ms;
+  --dur-slow: 320ms;
+
+  /* Focus: large, high-contrast and readable from across the room */
+  --focus-scale: 1.06;
+  --focus-color: #fff;
+  --focus-glow: rgba(255, 255, 255, 0.28);
+  --ring-gap: 0.22rem;
+  --ring-width: 0.32rem;
+  --focus-fill-bg: #fff;
+  --focus-fill-fg: #000;
+
+  --font: 'SamsungOne', 'Samsung Sans', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Settings → Accessibility → High Contrast Focus */
+:root.focus-high {
+  --focus-color: #ffd400;
+  --focus-glow: rgba(255, 212, 0, 0.45);
+  --ring-width: 0.5rem;
+  --focus-fill-bg: #ffd400;
+}

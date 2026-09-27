@@ -1,0 +1,87 @@
+.sidebar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  width: var(--sidebar-w);
+  padding: 2.5rem 1.25rem;
+  background: #000;
+  transition:
+    width var(--dur-slow) var(--ease),
+    background var(--dur-slow) var(--ease),
+    box-shadow var(--dur-slow) var(--ease);
+}
+
+.sidebar--expanded {
+  width: var(--sidebar-w-open);
+  background: linear-gradient(90deg, rgba(10, 11, 14, 0.98) 70%, rgba(10, 11, 14, 0.9));
+  box-shadow: 2rem 0 5rem rgba(0, 0, 0, 0.7);
+}
+
+.sidebar__list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+.sidebar__list--bottom {
+  flex: none;
+}
+
+.sidebar__item {
+  display: flex;
+  align-items: center;
+  gap: 1.3rem;
+  height: 4.5rem;
+  padding: 0 1.1rem;
+  border-radius: 2.25rem;
+  overflow: hidden;
+  white-space: nowrap;
+  color: var(--text-faint);
+}
+
+.sidebar__icon {
+  width: 2.3rem;
+  height: 2.3rem;
+}
+
+/* the profile item's icon slot is the user's avatar (initial on a colour) instead of a stroke icon */
+.sidebar__avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 50%;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.sidebar__label {
+  font-size: 1.6rem;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateX(-1rem);
+  transition:
+    opacity var(--dur) var(--ease),
+    transform var(--dur-slow) var(--ease);
+}
+
+.sidebar--expanded .sidebar__label {
+  opacity: 1;
+  transform: none;
+}
+
+/* Active page: the icon turns blue (like Home on the TV) */
+.sidebar__item.is-active {
+  color: #4d9bff;
+}
+
+.sidebar__item.is-active .sidebar__label {
+  color: var(--text);
+}

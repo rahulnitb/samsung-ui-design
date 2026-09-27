@@ -1,0 +1,37 @@
+.apps-section {
+  padding: 1.2rem var(--gutter) 0.5rem var(--content-left);
+}
+
+.apps-section__title {
+  font-size: 1.9rem;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+/* Column count must match APPS_GRID_COLUMNS in navigation/layouts.js */
+.apps-grid__row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 2.2rem;
+  padding: 1.4rem 0 0.6rem;
+}
+
+.category-card__surface {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 22rem;
+  height: 11rem;
+  padding: 1.4rem 1.6rem;
+  border-radius: var(--radius-lg);
+}
+
+.category-card__name {
+  font-size: 1.9rem;
+  font-weight: 700;
+}
+
+.category-card__count {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.75);
+}

@@ -1,0 +1,170 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  overflow: hidden;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+  cursor: default;
+}
+
+h1,
+h2,
+h3,
+p,
+ul {
+  margin: 0;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.icon {
+  width: 1.2em;
+  height: 1.2em;
+  flex: none;
+}
+
+/* ---------- Focus system ----------
+ * .focusable      – any element that can hold the single logical focus
+ * .focus-ring     – image-like surfaces: scale + double ring + glow
+ * .focus-fill     – text controls: invert to a solid bright pill
+ * .is-focused     – set by <FocusIndicator> on the focused element
+ */
+.focusable {
+  position: relative;
+  cursor: pointer;
+}
+
+.focusable.is-focused {
+  z-index: 2;
+}
+
+.focus-ring {
+  filter: brightness(0.9);
+  transition:
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    filter var(--dur) var(--ease);
+}
+
+/* Focus rules are chained with .focusable so they outrank component styling */
+.focusable.is-focused.focus-ring,
+.focusable.is-focused .focus-ring {
+  transform: scale(var(--focus-scale));
+  filter: brightness(1.12);
+  box-shadow:
+    0 0 0 var(--ring-gap) #000,
+    0 0 0 calc(var(--ring-gap) + var(--ring-width)) var(--focus-color),
+    0 1.2rem 3rem 0.4rem var(--focus-glow);
+}
+
+.focus-fill {
+  transition:
+    transform var(--dur) var(--ease),
+    background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+.focusable.focus-fill.is-focused {
+  background: var(--focus-fill-bg);
+  color: var(--focus-fill-fg);
+  transform: scale(var(--focus-scale));
+  box-shadow: 0 0.8rem 2.5rem var(--focus-glow);
+}
+
+/* ---------- Shared building blocks ---------- */
+.page-scroller {
+  position: absolute;
+  inset: 0;
+  overflow: hidden; /* scrolled programmatically by focus, never by the user */
+  scroll-padding: 1.5rem 0 2rem;
+  padding-bottom: 4rem;
+}
+
+.page-scroller--padded {
+  padding-top: 2.5rem;
+}
+
+.page-intro {
+  padding: 0.5rem var(--gutter) 0 var(--content-left);
+}
+
+.page-intro__title {
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.page-intro__subtitle {
+  margin-top: 0.4rem;
+  font-size: 1.5rem;
+  color: var(--text-dim);
+}
+
+.pill-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  height: 4.4rem;
+  padding: 0 1.9rem;
+  border-radius: 2.2rem;
+  background: var(--surface-2);
+  font-size: 1.5rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.overlay-anim {
+  animation: overlay-in var(--dur-slow) var(--ease);
+}
+
+.overlay-anim.is-closing {
+  animation: overlay-out var(--dur-slow) var(--ease) forwards;
+  pointer-events: none;
+}
+
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes overlay-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+}
+
+/* Settings → Accessibility → Reduce Motion */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 1ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 1ms !important;
+}

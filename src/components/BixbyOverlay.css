@@ -1,0 +1,90 @@
+.bixby-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6rem;
+  background: radial-gradient(ellipse 70% 60% at 50% 42%, rgba(123, 92, 255, 0.22), transparent 65%), rgba(4, 5, 8, 0.97);
+}
+
+.bixby-overlay__orb {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 16rem;
+  height: 16rem;
+}
+
+.bixby-overlay__core {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 8rem;
+  height: 8rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #29c6ff, #7b5cff 55%, #c23cff);
+  box-shadow: 0 1rem 3rem rgba(123, 92, 255, 0.45);
+}
+
+.bixby-overlay__mic {
+  width: 3.6rem;
+  height: 3.6rem;
+  color: #fff;
+}
+
+/* concentric rings rippling outward, like a voice waveform expanding from the mic */
+.bixby-overlay__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 0.15rem solid rgba(139, 110, 255, 0.55);
+  animation: bixby-ripple 2.4s ease-out infinite;
+}
+
+.bixby-overlay__ring--2 {
+  animation-delay: 0.6s;
+}
+
+.bixby-overlay__ring--3 {
+  animation-delay: 1.2s;
+}
+
+@keyframes bixby-ripple {
+  from {
+    transform: scale(0.5);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+.bixby-overlay__label {
+  font-size: 2.4rem;
+  font-weight: 700;
+}
+
+.bixby-overlay__hint {
+  font-size: 1.4rem;
+  color: var(--text-faint);
+}
+
+.bixby-overlay__cancel {
+  margin-top: 1.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 12rem;
+  height: 4.2rem;
+  padding: 0 2.4rem;
+  border-radius: 2.1rem;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 0 0.15rem rgba(255, 255, 255, 0.3);
+  font-size: 1.5rem;
+  font-weight: 600;
+}

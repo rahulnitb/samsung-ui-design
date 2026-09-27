@@ -1,0 +1,43 @@
+.tv {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.tv__main {
+  position: absolute;
+  inset: 0;
+}
+
+.tv__page {
+  position: absolute;
+  inset: 0;
+  animation: page-in 380ms var(--ease);
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.2rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Dims the page while the sidebar is expanded */
+.tv__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  background: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-slow) var(--ease);
+}
+
+.tv--sidebar-open .tv__scrim {
+  opacity: 1;
+}

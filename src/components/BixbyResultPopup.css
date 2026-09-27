@@ -1,0 +1,135 @@
+/* Dims the current screen behind the popup — the page itself stays visible and
+ * unchanged, unlike Search's full opaque takeover. */
+.bixby-popup-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 7.8rem; /* 6rem + 30% — nudges the popup up from its previous position */
+  background: rgba(0, 0, 0, 0.5);
+  animation: bixby-scrim-in var(--dur-slow) var(--ease);
+}
+
+.bixby-popup-scrim.is-closing {
+  pointer-events: none;
+  animation: bixby-scrim-out var(--dur-slow) var(--ease) forwards;
+}
+
+@keyframes bixby-scrim-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes bixby-scrim-out {
+  to {
+    opacity: 0;
+  }
+}
+
+.bixby-popup {
+  width: min(130rem, 94vw);
+  padding: 2.2rem 2.2rem 1.6rem;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #1c1826, #100d18);
+  box-shadow:
+    0 2rem 6rem rgba(0, 0, 0, 0.6),
+    inset 0 0 0 0.1rem rgba(139, 110, 255, 0.25);
+  animation: bixby-popup-in var(--dur-slow) var(--ease);
+}
+
+.bixby-popup.is-closing {
+  animation: bixby-popup-out var(--dur-slow) var(--ease) forwards;
+}
+
+@keyframes bixby-popup-in {
+  from {
+    opacity: 0;
+    transform: translateY(2.4rem) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes bixby-popup-out {
+  to {
+    opacity: 0;
+    transform: translateY(1.6rem) scale(0.98);
+  }
+}
+
+.bixby-popup__header {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 1.6rem;
+}
+
+.bixby-popup__badge {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #29c6ff, #7b5cff 55%, #c23cff);
+}
+
+.bixby-popup__badge .icon {
+  width: 1.8rem;
+  height: 1.8rem;
+  color: #fff;
+}
+
+.bixby-popup__said {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 1.6rem;
+  color: var(--text-dim);
+}
+
+.bixby-popup__said strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.bixby-popup__close {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  background: var(--surface-3);
+}
+
+.bixby-popup__close .icon {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.bixby-popup__empty {
+  padding: 1rem 0 1.4rem;
+  font-size: 1.4rem;
+  color: var(--text-faint);
+}
+
+/* single row, horizontally scrolled by focus only — same rule as every other row in the app */
+.bixby-popup__track {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.6rem;
+  overflow: hidden;
+  padding-bottom: 0.4rem;
+}
+
+.bixby-popup__item {
+  flex: none;
+}

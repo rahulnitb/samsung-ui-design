@@ -1,0 +1,9 @@
+.app-launcher {
+  padding-top: 0;
+}
+
+.app-launcher .content-section__track {
+  gap: 1.2rem;
+  padding-top: 1rem;
+  padding-bottom: 0.6rem;
+}

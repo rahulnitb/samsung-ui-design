@@ -1,0 +1,237 @@
+.profile-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+}
+
+.profile-panel__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  animation: profile-fade-in var(--dur-slow) var(--ease);
+}
+
+.profile-panel__sheet {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  width: 62rem;
+  max-width: 80vw;
+  padding: 3.5rem 3rem 2.5rem;
+  background: linear-gradient(180deg, #1a1d24, #111318);
+  box-shadow: -2rem 0 5rem rgba(0, 0, 0, 0.6);
+  animation: profile-slide-in var(--dur-slow) var(--ease);
+}
+
+.profile-panel.is-closing {
+  pointer-events: none;
+}
+
+.profile-panel.is-closing .profile-panel__backdrop {
+  animation: profile-fade-out var(--dur-slow) var(--ease) forwards;
+}
+
+.profile-panel.is-closing .profile-panel__sheet {
+  animation: profile-slide-out var(--dur-slow) var(--ease) forwards;
+}
+
+@keyframes profile-slide-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes profile-slide-out {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes profile-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes profile-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+.profile-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+.profile-panel__avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 5.6rem;
+  height: 5.6rem;
+  border-radius: 50%;
+  font-size: 2.2rem;
+  font-weight: 800;
+}
+
+.profile-panel__header h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+}
+
+.profile-panel__header p {
+  margin-top: 0.2rem;
+  font-size: 1.4rem;
+  color: var(--text-faint);
+}
+
+.profile-panel__body {
+  display: flex;
+  flex: 1;
+  gap: 2.4rem;
+  margin-top: 2.5rem;
+  min-height: 0;
+}
+
+.profile-panel__sections {
+  display: flex;
+  flex: 0 0 21rem;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.profile-panel__section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 4.6rem;
+  padding: 0 1.5rem;
+  border-radius: var(--radius-md);
+  font-size: 1.55rem;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.profile-panel__section.is-selected {
+  background: var(--surface-3);
+  color: var(--text);
+}
+
+.profile-panel__count {
+  min-width: 1.6rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.profile-panel__section.is-selected .profile-panel__count {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.profile-panel__list {
+  flex: 1;
+  min-width: 0;
+  padding-left: 2.4rem;
+  overflow: hidden;
+  border-left: 0.1rem solid rgba(255, 255, 255, 0.1);
+}
+
+.profile-panel__list ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.profile-panel__empty {
+  font-size: 1.4rem;
+  line-height: 1.5;
+  color: var(--text-faint);
+}
+
+.profile-panel__contact {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  min-height: 5.4rem;
+  padding: 0.6rem 1.4rem;
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+
+.profile-panel__contact-avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.profile-panel__contact-info {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.profile-panel__contact-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.profile-panel__contact-handle {
+  font-size: 1.1rem;
+  color: var(--text-faint);
+}
+
+/* the row turns into a solid white pill on focus; the faint grey handle needs a dark tone to stay legible */
+.profile-panel__contact.is-focused .profile-panel__contact-handle {
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.profile-panel__action {
+  flex: none;
+  padding: 0.4rem 1rem;
+  border-radius: 1rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.profile-panel__action.is-add {
+  background: rgba(77, 155, 255, 0.22);
+  color: #7fb8ff;
+}
+
+.profile-panel__action.is-remove {
+  background: rgba(255, 77, 94, 0.2);
+  color: #ff8b96;
+}
+
+.profile-panel__contact.is-focused .profile-panel__action.is-add,
+.profile-panel__contact.is-focused .profile-panel__action.is-remove {
+  background: rgba(0, 0, 0, 0.22);
+  color: inherit;
+}
+
+.profile-panel__hint {
+  font-size: 1.2rem;
+  color: var(--text-faint);
+}

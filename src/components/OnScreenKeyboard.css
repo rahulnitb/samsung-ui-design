@@ -1,0 +1,30 @@
+.osk {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: min(64rem, 100%);
+}
+
+/* Column count must match KEYBOARD_COLUMNS in navigation/layouts.js */
+.osk__row {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.osk__key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  height: 4.6rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.osk__key--action {
+  background: var(--surface-3);
+  font-size: 1.45rem;
+}

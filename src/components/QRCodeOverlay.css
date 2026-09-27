@@ -1,0 +1,121 @@
+.qr-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  /* the requested touch: the page behind this overlay is blurred, not just dimmed */
+  backdrop-filter: blur(1.4rem);
+  -webkit-backdrop-filter: blur(1.4rem);
+  animation: qr-scrim-in var(--dur-slow) var(--ease);
+}
+
+.qr-scrim.is-closing {
+  pointer-events: none;
+  animation: qr-scrim-out var(--dur-slow) var(--ease) forwards;
+}
+
+@keyframes qr-scrim-in {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+    -webkit-backdrop-filter: blur(0);
+  }
+}
+
+@keyframes qr-scrim-out {
+  to {
+    opacity: 0;
+    backdrop-filter: blur(0);
+    -webkit-backdrop-filter: blur(0);
+  }
+}
+
+.qr-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: min(46rem, 90vw);
+  padding: 3.2rem 3.6rem 2.8rem;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #1c1e26, #101218);
+  box-shadow:
+    0 2rem 6rem rgba(0, 0, 0, 0.6),
+    inset 0 0 0 0.1rem rgba(255, 255, 255, 0.1);
+  text-align: center;
+  animation: qr-card-in var(--dur-slow) var(--ease);
+}
+
+.qr-card.is-closing {
+  animation: qr-card-out var(--dur-slow) var(--ease) forwards;
+}
+
+@keyframes qr-card-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes qr-card-out {
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+.qr-card__close {
+  position: absolute;
+  top: 1.4rem;
+  right: 1.4rem;
+  display: grid;
+  place-items: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  background: var(--surface-3);
+}
+
+.qr-card__close .icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.qr-card__code {
+  padding: 1.2rem;
+  border-radius: var(--radius-md);
+  background: #fff;
+  box-shadow: 0 0.6rem 2rem rgba(0, 0, 0, 0.35);
+}
+
+.qr-code {
+  display: block;
+  width: 20rem;
+  height: 20rem;
+}
+
+.qr-card__title {
+  margin-top: 0.6rem;
+  font-size: 2.1rem;
+  font-weight: 700;
+}
+
+.qr-card__caption {
+  max-width: 34rem;
+  font-size: 1.35rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.qr-card__note {
+  font-size: 1.05rem;
+  color: var(--text-faint);
+}

@@ -1,0 +1,142 @@
+.content-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.content-card--landscape {
+  width: 30rem;
+}
+
+.content-card--feature {
+  width: 25rem;
+}
+
+/* group heading ("Now Playing", "Recommended for You") above the first card of a group */
+.content-card__label {
+  position: absolute;
+  bottom: calc(100% + 1rem);
+  left: 0.2rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--text-dim);
+  transition: color var(--dur) var(--ease);
+}
+
+.is-row-focused .content-card__label {
+  color: var(--text);
+}
+
+/* small brand wordmark, bottom-left over the art (like a real streaming-service logo) */
+.content-card__provider {
+  position: absolute;
+  left: 0.9rem;
+  bottom: 0.9rem;
+  z-index: 1;
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-style: italic;
+  color: #4d9bff;
+  text-shadow: 0 0.15rem 0.5rem rgba(0, 0, 0, 0.7);
+}
+
+.content-card--compact {
+  width: 22rem;
+}
+
+.content-card--poster {
+  width: 15rem;
+}
+
+.content-card__media {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--surface);
+  aspect-ratio: 16 / 9;
+}
+
+.content-card--poster .content-card__media {
+  aspect-ratio: 2 / 3;
+}
+
+.content-card__media .artwork {
+  position: absolute;
+  inset: 0;
+}
+
+.content-card--landscape .artwork__title {
+  font-size: 2.3rem;
+}
+
+.content-card__media.has-progress .artwork__title {
+  bottom: 2.4rem;
+}
+
+/* raise the baked-in title so it clears the provider wordmark in the same corner */
+.content-card__media.has-provider .artwork__title {
+  bottom: 3rem;
+}
+
+.content-card__badge {
+  position: absolute;
+  top: 0.9rem;
+  left: 0.9rem;
+  z-index: 1;
+  padding: 0.25rem 0.65rem;
+  border-radius: 0.4rem;
+  background: rgba(0, 0, 0, 0.6);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.content-card__badge--live {
+  background: var(--live);
+}
+
+.content-card__badge--new {
+  background: var(--accent);
+}
+
+.content-card__progress {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 1;
+}
+
+.content-card__info {
+  padding: 0 0.2rem;
+  transition: transform var(--dur) var(--ease);
+}
+
+/* push the text down so it clears the scaled-up artwork */
+.content-card.is-focused .content-card__info {
+  transform: translateY(0.5rem);
+}
+
+.content-card__title,
+.content-card__meta {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.content-card__title {
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.content-card.is-focused .content-card__title {
+  color: var(--text);
+}
+
+.content-card__meta {
+  margin-top: 0.25rem;
+  font-size: 1.15rem;
+  color: var(--text-faint);
+}

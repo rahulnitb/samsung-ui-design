@@ -1,0 +1,32 @@
+.debug {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 100;
+  min-width: 26rem;
+  padding: 1rem 1.2rem;
+  border: 0.1rem solid rgba(0, 255, 140, 0.5);
+  border-radius: 0.6rem;
+  background: rgba(0, 0, 0, 0.85);
+  color: #7dffb8;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 1.1rem;
+  pointer-events: none;
+}
+
+.debug__title {
+  margin-bottom: 0.6rem;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+.debug__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  line-height: 1.6;
+}
+
+.debug__row span:first-child {
+  color: rgba(125, 255, 184, 0.65);
+}
