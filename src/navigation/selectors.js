@@ -58,6 +58,9 @@ export function describeFocus(state) {
     if (overlay.type === 'search') rowId = getSearchRows(state.searchQuery)[overlay.row]?.id;
     if (overlay.type === 'settings') rowId = overlay.col === 0 ? 'categories' : 'options';
     if (overlay.type === 'profile') rowId = overlay.col === 0 ? 'sections' : 'contacts';
+    if (overlay.type === 'friendConfirm') rowId = 'choice';
+    if (overlay.type === 'wsResult') rowId = overlay.row === 0 ? 'controls' : 'results';
+    if (overlay.type === 'shareTarget') rowId = 'friends';
     if (overlay.type === 'bixby') rowId = 'listening';
     if (overlay.type === 'bixbyResult') rowId = overlay.row === 0 ? 'close' : 'results';
     if (overlay.type === 'qr') rowId = 'close';

@@ -1,15 +1,20 @@
+import { useEffect } from 'react';
 import { useNavDispatch, useNavState } from '../navigation/NavigationContext.jsx';
 import { findOverlay, isOverlayFocused, makeTarget } from '../navigation/selectors.js';
 import { profileUser, profileContacts } from '../data/profileData.js';
 import { useLastDefined, usePresence } from '../hooks/usePresence.js';
+import * as friendsApi from '../api/friendsApi.js';
 import FocusIndicator from './FocusIndicator.jsx';
 import './ProfileOverlay.css';
 
 const SCOPE = 'profile';
-const SECTIONS = ['Friends List', 'Add Friends'];
+const SECTIONS = ['Friends List', 'Add Friends', 'Blocked'];
+const ACTION_LABEL = ['Manage', 'Add', 'Unblock'];
+const ACTION_CLASS = ['is-manage', 'is-add', 'is-unblock'];
+const HINT_TEXT = ['manage friend', 'add friend', 'unblock'];
 
 /**
- * Right-side panel opened from the sidebar avatar. Focus grid: col 0 = the two
+ * Right-side panel opened from the sidebar avatar. Focus grid: col 0 = the three
  * section tabs, col 1 = the contact list for whichever section is selected.
  */
 export default function ProfileOverlay() {
@@ -18,15 +23,41 @@ export default function ProfileOverlay() {
   const liveEntry = findOverlay(state, SCOPE);
   const entry = useLastDefined(liveEntry);
   const { mounted, closing } = usePresence(Boolean(liveEntry));
+  const open = Boolean(liveEntry);
+
+  // Load the friend list from the (dummy) friends API the first time the panel opens.
+  useEffect(() => {
+    if (!open || state.friendsStatus !== 'idle') return;
+    let ignore = false;
+    dispatch({ type: 'FRIENDS_LOAD_START' });
+    friendsApi
+      .getFriendList()
+      .then(({ friendIds, blockedIds }) => {
+        if (!ignore) dispatch({ type: 'FRIENDS_LOAD_SUCCESS', friendIds, blockedIds });
+      })
+      .catch(() => {
+        if (!ignore) dispatch({ type: 'FRIENDS_LOAD_ERROR' });
+      });
+    return () => {
+      ignore = true;
+    };
+  }, [open, state.friendsStatus, dispatch]);
+
   if (!mounted || !entry) return null;
 
   const friends = profileContacts.filter((contact) => state.friendIds.includes(contact.id));
-  const addable = profileContacts.filter((contact) => !state.friendIds.includes(contact.id));
-  const isFriendsTab = entry.category === 0;
-  const list = isFriendsTab ? friends : addable;
-  const emptyText = isFriendsTab
-    ? 'No friends yet — add some from the Add Friends tab.'
-    : "You've added everyone in your contacts.";
+  const addable = profileContacts.filter(
+    (contact) => !state.friendIds.includes(contact.id) && !state.blockedIds.includes(contact.id),
+  );
+  const blocked = profileContacts.filter((contact) => state.blockedIds.includes(contact.id));
+  const lists = [friends, addable, blocked];
+  const list = lists[entry.category];
+  const EMPTY_TEXT = [
+    'No friends yet — add some from the Add Friends tab.',
+    "You've added everyone in your contacts.",
+    'No one is blocked.',
+  ];
+  const emptyText = EMPTY_TEXT[entry.category];
 
   return (
     <div className={`profile-panel ${closing ? 'is-closing' : ''}`} role="dialog" aria-label="Profile">
@@ -53,7 +84,7 @@ export default function ProfileOverlay() {
                   className={`profile-panel__section ${index === entry.category ? 'is-selected' : ''}`}
                 >
                   <span>{label}</span>
-                  <span className="profile-panel__count">{index === 0 ? friends.length : addable.length}</span>
+                  <span className="profile-panel__count">{lists[index].length}</span>
                 </FocusIndicator>
               </li>
             ))}
@@ -82,8 +113,8 @@ export default function ProfileOverlay() {
                         <span className="profile-panel__contact-name">{contact.name}</span>
                         <span className="profile-panel__contact-handle">{contact.handle}</span>
                       </span>
-                      <span className={`profile-panel__action ${isFriendsTab ? 'is-remove' : 'is-add'}`}>
-                        {isFriendsTab ? 'Remove' : 'Add'}
+                      <span className={`profile-panel__action ${ACTION_CLASS[entry.category]}`}>
+                        {ACTION_LABEL[entry.category]}
                       </span>
                     </FocusIndicator>
                   </li>
@@ -94,7 +125,7 @@ export default function ProfileOverlay() {
         </div>
 
         <footer className="profile-panel__hint">
-          Enter: {isFriendsTab ? 'remove friend' : 'add friend'} · ← / Esc: back
+          Enter: {HINT_TEXT[entry.category]} · ← / Esc: back
         </footer>
       </aside>
     </div>

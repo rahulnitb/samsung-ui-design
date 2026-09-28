@@ -84,6 +84,14 @@ const ICONS = {
       <path d="M12 17.5V21M8.5 21h7" />
     </>
   ),
+  wifi: (
+    <>
+      <path d="M4 9.5a12 12 0 0 1 16 0" />
+      <path d="M7 13a7.5 7.5 0 0 1 10 0" />
+      <path d="M10 16.5a3 3 0 0 1 4 0" />
+      <circle cx="12" cy="20" r="1" fill="currentColor" stroke="none" />
+    </>
+  ),
   qr: (
     <>
       <rect x="3" y="3" width="7" height="7" rx="1" />
@@ -96,6 +104,72 @@ const ICONS = {
       <rect x="18.5" y="14.5" width="2.5" height="2.5" fill="currentColor" stroke="none" />
       <rect x="14.5" y="18.5" width="2.5" height="2.5" fill="currentColor" stroke="none" />
       <rect x="18.5" y="18.5" width="2.5" height="2.5" fill="currentColor" stroke="none" />
+    </>
+  ),
+  globe: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18M12 3c2.5 2.5 4 5.7 4 9s-1.5 6.5-4 9c-2.5-2.5-4-5.7-4-9s1.5-6.5 4-9Z" />
+    </>
+  ),
+  musicNote: (
+    <>
+      <path d="M9 18V5l11-2v13" />
+      <circle cx="6.5" cy="18" r="2.5" />
+      <circle cx="17.5" cy="16" r="2.5" />
+    </>
+  ),
+  image: (
+    <>
+      <rect x="3" y="4" width="18" height="16" rx="2.5" />
+      <circle cx="8.5" cy="9.5" r="1.5" fill="currentColor" stroke="none" />
+      <path d="m4 17 5-5 3.5 3.5L17 10l4 5.5" />
+    </>
+  ),
+  heart: <path d="M12 20.5S3.5 15 3.5 9.2C3.5 6 6 4 8.7 4c1.7 0 3 .8 3.8 2.1C13.3 4.8 14.6 4 16.3 4 19 4 21.5 6 21.5 9.2 21.5 15 12 20.5 12 20.5Z" />,
+  gamepad: (
+    <>
+      <rect x="2.5" y="8" width="19" height="10" rx="5" />
+      <path d="M7 11v4M5 13h4" />
+      <circle cx="15.5" cy="11.5" r="1" fill="currentColor" stroke="none" />
+      <circle cx="18" cy="14" r="1" fill="currentColor" stroke="none" />
+    </>
+  ),
+  palette: (
+    <>
+      <path d="M12 3a9 9 0 1 0 0 18c1.4 0 2-.8 2-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4c0-4.4-4-8-9-8Z" />
+      <circle cx="7.5" cy="10.5" r="1.2" fill="currentColor" stroke="none" />
+      <circle cx="11" cy="7" r="1.2" fill="currentColor" stroke="none" />
+      <circle cx="15.5" cy="8" r="1.2" fill="currentColor" stroke="none" />
+    </>
+  ),
+  graduationCap: (
+    <>
+      <path d="m2 9 10-4.5L22 9l-10 4.5L2 9Z" />
+      <path d="M6 11.5V17c0 1.5 2.5 3 6 3s6-1.5 6-3v-5.5" />
+      <path d="M22 9v6" />
+    </>
+  ),
+  gift: (
+    <>
+      <rect x="3" y="9" width="18" height="12" rx="1.5" />
+      <path d="M3 13h18" />
+      <path d="M12 9v12" />
+      <path d="M12 9c-1-3-3-5-5-5-1.7 0-3 1.1-3 2.5S5.3 9 7 9Z" />
+      <path d="M12 9c1-3 3-5 5-5 1.7 0 3 1.1 3 2.5S18.7 9 17 9Z" />
+    </>
+  ),
+  check: <path d="M4 12.5 9.5 18 20 6" />,
+  share: (
+    <>
+      <path d="M12 15V3M12 3 8 7M12 3l4 4" />
+      <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" />
+    </>
+  ),
+  sparkle: (
+    <>
+      <path d="M12 3v5M12 16v5M3 12h5M16 12h5" />
+      <path d="m6 6 2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6" />
     </>
   ),
 };

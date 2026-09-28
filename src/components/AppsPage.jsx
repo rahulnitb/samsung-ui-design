@@ -1,28 +1,33 @@
 import { useNavState } from '../navigation/NavigationContext.jsx';
-import { getPageRows, tabsRowIndex } from '../navigation/layouts.js';
-import TopNavigation from './TopNavigation.jsx';
 import { isMainFocused, makeTarget } from '../navigation/selectors.js';
+import { getPageRows } from '../navigation/layouts.js';
+import TopNavigation from './TopNavigation.jsx';
 import PageScroller from './PageScroller.jsx';
 import ContentSection from './ContentSection.jsx';
 import FocusIndicator from './FocusIndicator.jsx';
 import AppIcon from './AppIcon.jsx';
+import AppsHero from './AppsHero.jsx';
+import EditorsChoiceCard from './EditorsChoiceCard.jsx';
 import './AppsPage.css';
 
 const rows = getPageRows('apps');
 
-// Consecutive grid rows that share a section are rendered under one heading.
-function groupRows() {
+// Consecutive appGrid rows sharing a `section` (Installed Apps, More to Explore)
+// render together under one heading.
+function groupGridRows() {
   const groups = [];
   rows.forEach((row, index) => {
-    if (row.kind === 'tabs') return;
+    if (row.kind !== 'appGrid') return;
     const last = groups[groups.length - 1];
-    if (row.section && last?.section?.id === row.section.id) last.rows.push({ row, index });
-    else groups.push({ section: row.section ?? null, rows: [{ row, index }] });
+    if (last?.section.id === row.section.id) last.rows.push({ row, index });
+    else groups.push({ section: row.section, rows: [{ row, index }] });
   });
   return groups;
 }
 
-const groups = groupRows();
+const gridGroups = groupGridRows();
+const gridGroupByFirstIndex = new Map(gridGroups.map((group) => [group.rows[0].index, group]));
+const skipGridIndex = new Set(gridGroups.flatMap((group) => group.rows.slice(1).map((entry) => entry.index)));
 
 function CategoryCard({ category, focused, target }) {
   return (
@@ -35,49 +40,89 @@ function CategoryCard({ category, focused, target }) {
   );
 }
 
-export default function AppsPage() {
+// appGrid rows are a plain grid rather than a scrolling ContentSection track, so
+// their focus wiring is spelled out directly here (spatial columns via `widths`,
+// same { area: 'main', row, col } targets as everywhere else on the page).
+function AppGridGroup({ group }) {
   const state = useNavState();
+  return (
+    <section className="apps-section" data-row={group.rows[0].index}>
+      <h2 className="apps-section__title">{group.section.title}</h2>
+      {group.rows.map(({ row, index }) => (
+        <div key={row.id} className="apps-grid__row" data-row={index === group.rows[0].index ? undefined : index}>
+          {row.items.map((app, col) => (
+            <AppIcon
+              key={app.id}
+              app={app}
+              shape="tile"
+              showName
+              focused={isMainFocused(state, index, col)}
+              target={makeTarget('main', index, col)}
+            />
+          ))}
+        </div>
+      ))}
+    </section>
+  );
+}
 
+export default function AppsPage() {
   return (
     <PageScroller padded>
-      <TopNavigation rowIndex={tabsRowIndex('apps')} />
-      {groups.map((group) => {
-        if (!group.section) {
-          const { row, index } = group.rows[0];
-          return (
-            <ContentSection
-              key={row.id}
-              className="apps-categories"
-              title={row.title}
-              items={row.items}
-              rowIndex={index}
-              rowId={row.id}
-              renderItem={(category, focus) => <CategoryCard category={category} {...focus} />}
-            />
-          );
-        }
-
-        // The section element carries the first row's data-row so its heading scrolls into view with it.
-        const [first, ...rest] = group.rows;
-        return (
-          <section key={group.section.id} className="apps-section" data-row={first.index}>
-            <h2 className="apps-section__title">{group.section.title}</h2>
-            {[first, ...rest].map(({ row, index }) => (
-              <div key={row.id} className="apps-grid__row" data-row={index === first.index ? undefined : index}>
-                {row.items.map((app, col) => (
+      {rows.map((row, index) => {
+        switch (row.kind) {
+          case 'banner':
+            return <AppsHero key={row.id} rowIndex={index} />;
+          case 'tabs':
+            return <TopNavigation key={row.id} rowIndex={index} />;
+          case 'apps':
+            return (
+              <ContentSection
+                key={row.id}
+                items={row.items}
+                rowIndex={index}
+                rowId={row.id}
+                className="apps-featured"
+                renderItem={(app, focus, col) => (
                   <AppIcon
-                    key={app.id}
                     app={app}
-                    shape="tile"
+                    shape="squircle"
                     showName
-                    focused={isMainFocused(state, index, col)}
-                    target={makeTarget('main', index, col)}
+                    groupLabel={row.groupLabels?.[col]}
+                    className={col === row.groupStart ? 'app-icon--group-start' : ''}
+                    {...focus}
                   />
-                ))}
-              </div>
-            ))}
-          </section>
-        );
+                )}
+              />
+            );
+          case 'editorsChoice':
+            return (
+              <ContentSection
+                key={row.id}
+                title={row.title}
+                items={row.items}
+                rowIndex={index}
+                rowId={row.id}
+                renderItem={(item, focus) => <EditorsChoiceCard item={item} {...focus} />}
+              />
+            );
+          case 'appGrid':
+            return skipGridIndex.has(index) ? null : <AppGridGroup key={row.id} group={gridGroupByFirstIndex.get(index)} />;
+          case 'categories':
+            return (
+              <ContentSection
+                key={row.id}
+                className="apps-categories"
+                title={row.title}
+                items={row.items}
+                rowIndex={index}
+                rowId={row.id}
+                renderItem={(category, focus) => <CategoryCard category={category} {...focus} />}
+              />
+            );
+          default:
+            return null;
+        }
       })}
     </PageScroller>
   );

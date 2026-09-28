@@ -102,6 +102,61 @@
   height: 20rem;
 }
 
+.qr-card__code-loading {
+  width: 20rem;
+  height: 20rem;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, #e8e8e8, #f6f6f6, #e8e8e8);
+  background-size: 200% 100%;
+  animation: qr-code-loading 1.3s ease-in-out infinite;
+}
+
+@keyframes qr-code-loading {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.qr-card__connected {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 20rem;
+  height: 20rem;
+  border-radius: var(--radius-md);
+  background: rgba(46, 214, 128, 0.12);
+  box-shadow: inset 0 0 0 0.1rem rgba(46, 214, 128, 0.35);
+  animation: qr-connected-in var(--dur-slow) var(--ease);
+}
+
+.qr-card__connected-icon {
+  width: 4.4rem;
+  height: 4.4rem;
+  color: #2ed680;
+}
+
+.qr-card__connected-label {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2ed680;
+}
+
+@keyframes qr-connected-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .qr-card__title {
   margin-top: 0.6rem;
   font-size: 2.1rem;

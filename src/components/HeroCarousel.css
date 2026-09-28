@@ -39,10 +39,55 @@
   object-fit: cover;
 }
 
+/* Abstract illustrated shapes, upper-right, tinted from this slide's own colours —
+ * same generated-shape language as the Apps/Live banners, never a copy of real art. */
+.hero__shapes {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0.75;
+  animation: hero-art-in 900ms var(--ease);
+}
+
+.hero__leaf {
+  position: absolute;
+  border-radius: 0 60% 0 60%;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.hero__leaf--1 {
+  top: -7rem;
+  right: 6%;
+  width: 22rem;
+  height: 30rem;
+  transform: rotate(-25deg);
+}
+
+.hero__leaf--2 {
+  top: -3rem;
+  right: 15%;
+  width: 13rem;
+  height: 19rem;
+  background: rgba(255, 255, 255, 0.035);
+  transform: rotate(14deg);
+}
+
+.hero__ring {
+  position: absolute;
+  top: 3rem;
+  right: 26%;
+  width: 12rem;
+  height: 12rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, var(--accent), var(--glow) 70%);
+  opacity: 0.55;
+}
+
 /* darken the left edge (behind the sidebar) and the bottom (behind the text/tab pill) */
 .hero__scrim {
   position: absolute;
   inset: 0;
+  z-index: 2;
   background:
     linear-gradient(90deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 30%, transparent 58%),
     linear-gradient(0deg, #000 0%, rgba(0, 0, 0, 0.55) 24%, transparent 52%);

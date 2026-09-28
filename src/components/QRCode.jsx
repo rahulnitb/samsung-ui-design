@@ -1,25 +1,10 @@
+import { hashString, createRandom } from '../utils/random.js';
+
 // A visually convincing QR-style pattern generated from `value` — proper finder
 // squares in three corners and a timing line, like a real QR code, but the "data"
 // modules are deterministic pseudo-random noise rather than a real encoding. This is
 // a browser simulation (see README), so it's decorative, not a scannable code.
 const MODULES = 21; // matches a real QR "version 1" grid, for an authentic look
-
-function hashString(text) {
-  let value = 0;
-  for (const char of text) value = (value * 31 + char.charCodeAt(0)) | 0;
-  return Math.abs(value);
-}
-
-// Small, fast, deterministic PRNG (mulberry32) seeded from the hash above.
-function createRandom(seed) {
-  let a = seed;
-  return () => {
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), a | 1);
-    t = (t + Math.imul(t ^ (t >>> 7), t | 61)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
 
 const FINDER_ORIGINS = [
   [0, 0],

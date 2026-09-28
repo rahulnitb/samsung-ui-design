@@ -1,0 +1,226 @@
+/* Dims the current screen behind the popup — same treatment as BixbyResultPopup. */
+.ws-popup-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 7.8rem;
+  background: rgba(0, 0, 0, 0.5);
+  animation: ws-scrim-in var(--dur-slow) var(--ease);
+}
+
+.ws-popup-scrim.is-closing {
+  pointer-events: none;
+  animation: ws-scrim-out var(--dur-slow) var(--ease) forwards;
+}
+
+@keyframes ws-scrim-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes ws-scrim-out {
+  to {
+    opacity: 0;
+  }
+}
+
+.ws-popup {
+  width: min(130rem, 94vw);
+  padding: 2.2rem 2.2rem 1.6rem;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #182420, #0d1512);
+  box-shadow:
+    0 2rem 6rem rgba(0, 0, 0, 0.6),
+    inset 0 0 0 0.1rem rgba(46, 214, 128, 0.25);
+  animation: ws-popup-in var(--dur-slow) var(--ease);
+}
+
+.ws-popup.is-closing {
+  animation: ws-popup-out var(--dur-slow) var(--ease) forwards;
+}
+
+@keyframes ws-popup-in {
+  from {
+    opacity: 0;
+    transform: translateY(2.4rem) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ws-popup-out {
+  to {
+    opacity: 0;
+    transform: translateY(1.6rem) scale(0.98);
+  }
+}
+
+.ws-popup__header {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 1.6rem;
+}
+
+.ws-popup__badge {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2ed680, #12693f);
+}
+
+.ws-popup__badge .icon {
+  width: 1.8rem;
+  height: 1.8rem;
+  color: #fff;
+}
+
+.ws-popup__said {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 1.6rem;
+  color: var(--text-dim);
+}
+
+.ws-popup__action {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex: none;
+  padding: 0 1.6rem;
+  height: 3.6rem;
+  border-radius: 1.8rem;
+  background: var(--surface-3);
+  font-size: 1.3rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* the "catch your eye" action — solid gradient fill + glow, not just a tinted pill, so it
+ * reads as the primary action in the row even before it's focused */
+.ws-popup__action.is-share {
+  padding: 0 2rem;
+  background: linear-gradient(135deg, #3eeb9c, #1a9d5c);
+  color: #04210f;
+  box-shadow:
+    0 0.5rem 1.6rem rgba(46, 214, 128, 0.45),
+    inset 0 0 0 0.1rem rgba(255, 255, 255, 0.25);
+  animation: ws-share-pulse 2.4s ease-in-out infinite;
+}
+
+.ws-popup__action.is-share .icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+@keyframes ws-share-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0.5rem 1.6rem rgba(46, 214, 128, 0.45),
+      inset 0 0 0 0.1rem rgba(255, 255, 255, 0.25);
+  }
+  50% {
+    box-shadow:
+      0 0.5rem 2.2rem rgba(46, 214, 128, 0.7),
+      inset 0 0 0 0.1rem rgba(255, 255, 255, 0.35);
+  }
+}
+
+.ws-popup__action.is-share.is-focused {
+  animation: none;
+}
+
+.ws-popup__action.is-share.is-disabled {
+  background: var(--surface-3);
+  color: var(--text-faint);
+  box-shadow: none;
+  animation: none;
+}
+
+.ws-popup__close {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  background: var(--surface-3);
+}
+
+.ws-popup__close .icon {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+/* single row, horizontally scrolled by focus only — same rule as every other row in the app */
+.ws-popup__track {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.6rem;
+  overflow: hidden;
+  padding-bottom: 0.4rem;
+}
+
+/* ContentCard/ChannelCard/AppIcon each have their own natural size (they're reused as-is
+ * from elsewhere in the app), which otherwise makes this mixed-type row look ragged — force
+ * every tile into the same slot, bottom-aligned, so the row reads as a uniform grid. */
+.ws-popup__item {
+  position: relative;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 22rem;
+  height: 19rem;
+}
+
+.ws-popup__item .content-card,
+.ws-popup__item .channel-card,
+.ws-popup__item .app-icon {
+  width: 100%;
+}
+
+.ws-popup__checkbox {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  /* .focusable.is-focused (base.css) sets z-index:2 on the focused tile beneath this —
+     outrank it so the checkmark stays visible even when its own tile is focused. */
+  z-index: 3;
+  /* purely a visual indicator, layered on top of the tile's own clickable area — without
+     this, clicking/hovering this corner would hit this badge instead of the FocusIndicator
+     underneath, silently swallowing the click instead of toggling selection. */
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  box-shadow: inset 0 0 0 0.15rem rgba(255, 255, 255, 0.6);
+}
+
+.ws-popup__checkbox.is-checked {
+  background: #2ed680;
+  box-shadow: none;
+}
+
+.ws-popup__checkbox .icon {
+  width: 1.3rem;
+  height: 1.3rem;
+  color: #06210f;
+}

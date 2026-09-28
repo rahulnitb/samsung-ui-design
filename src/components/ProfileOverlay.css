@@ -220,13 +220,19 @@
   color: #7fb8ff;
 }
 
-.profile-panel__action.is-remove {
-  background: rgba(255, 77, 94, 0.2);
-  color: #ff8b96;
+.profile-panel__action.is-manage {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text-dim);
+}
+
+.profile-panel__action.is-unblock {
+  background: rgba(77, 255, 155, 0.18);
+  color: #6ee6a8;
 }
 
 .profile-panel__contact.is-focused .profile-panel__action.is-add,
-.profile-panel__contact.is-focused .profile-panel__action.is-remove {
+.profile-panel__contact.is-focused .profile-panel__action.is-manage,
+.profile-panel__contact.is-focused .profile-panel__action.is-unblock {
   background: rgba(0, 0, 0, 0.22);
   color: inherit;
 }

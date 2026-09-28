@@ -1,6 +1,7 @@
 import { allTitles } from '../data/movieData.js';
 import { liveCategories } from '../data/liveData.js';
 import { installedApps, recommendedApps } from '../data/appData.js';
+import { hashString } from './random.js';
 
 const allChannels = liveCategories.flatMap((category) => category.channels);
 
@@ -52,12 +53,6 @@ const SUGGESTION_YEARS = [2021, 2022, 2023, 2024, 2025];
 const SUGGESTION_RATINGS = ['13+', '16+', 'All', '18+'];
 
 const titleCase = (text) => text.replace(/\S+/g, (word) => word[0].toUpperCase() + word.slice(1));
-
-function hashString(text) {
-  let value = 0;
-  for (const char of text) value = (value * 31 + char.charCodeAt(0)) | 0;
-  return Math.abs(value);
-}
 
 // Deterministic per query: the same search always suggests the same "titles".
 export function suggestedResults(query) {

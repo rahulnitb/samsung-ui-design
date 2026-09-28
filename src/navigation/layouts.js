@@ -1,5 +1,13 @@
 import { forYouSections } from '../data/movieData.js';
-import { launcherApps, installedApps, recommendedApps, appCategories } from '../data/appData.js';
+import {
+  launcherApps,
+  installedApps,
+  recommendedApps,
+  appCategories,
+  recommendedRow,
+  samsungRow,
+  editorsChoice,
+} from '../data/appData.js';
 import { liveCategories } from '../data/liveData.js';
 import { searchAll, popularTitles, suggestedResults } from '../utils/search.js';
 
@@ -59,6 +67,7 @@ const PAGE_ROWS = {
     { id: 'popular', kind: 'cards', title: popular.title, variant: 'poster', items: popular.items },
   ],
   live: [
+    { id: 'liveHero', kind: 'banner', items: [] },
     tabsRow,
     ...liveCategories.map((category) => ({
       id: `live-${category.id}`,
@@ -67,10 +76,22 @@ const PAGE_ROWS = {
       items: category.channels,
     })),
   ],
+  // Matches Samsung's own Apps tab: illustrated banner, tab pill, a "Recommended" /
+  // "Provided by Samsung" row (one row, two labelled groups), Editor's Choice promo
+  // banners, then the fuller Installed Apps / More to Explore / Categories browsing.
   apps: [
+    { id: 'appsHero', kind: 'banner', items: [] },
     tabsRow,
+    {
+      id: 'appsFeatured',
+      kind: 'apps',
+      items: [...recommendedRow, ...samsungRow],
+      groupLabels: { 0: 'Recommended', [recommendedRow.length]: 'Provided by Samsung' },
+      groupStart: recommendedRow.length,
+    },
+    { id: 'editorsChoice', kind: 'editorsChoice', title: "Editor's Choice", items: editorsChoice },
     ...gridRows({ id: 'installed', title: 'Installed Apps' }, installedApps, APPS_GRID_COLUMNS),
-    ...gridRows({ id: 'recommended', title: 'Recommended Apps' }, recommendedApps, APPS_GRID_COLUMNS),
+    ...gridRows({ id: 'moreApps', title: 'More to Explore' }, recommendedApps, APPS_GRID_COLUMNS),
     { id: 'appCategories', kind: 'categories', title: 'Categories', items: appCategories },
   ],
 };

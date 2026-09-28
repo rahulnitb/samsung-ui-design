@@ -1,4 +1,8 @@
-// Mock catalogue. Artwork is generated from `palette`; set `image` to use a real poster/still.
+import { stockImage } from '../utils/stockImage.js';
+
+// Mock catalogue. `image` is real stock photography (not actual poster art — see
+// utils/stockImage.js); pass `image: null` instead to fall back to the generated
+// `palette` gradient.
 const title = (id, name, year, genre, rating, duration, palette) => ({
   id,
   title: name,
@@ -7,7 +11,7 @@ const title = (id, name, year, genre, rating, duration, palette) => ({
   rating,
   duration,
   palette,
-  image: null,
+  image: stockImage(id),
 });
 
 export const movies = {

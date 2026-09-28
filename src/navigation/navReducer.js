@@ -9,7 +9,7 @@ import {
   pageIndex,
 } from './layouts.js';
 import { moveFocus, rememberColumn, clamp, wrap } from './grid.js';
-import { topOverlay } from './selectors.js';
+import { topOverlay, findOverlay } from './selectors.js';
 import { sidebarItems, PAGE_TO_SIDEBAR } from '../data/sidebarData.js';
 import { heroSlides } from '../data/heroData.js';
 import { settingsCategories, createDefaultSettings } from '../data/settingsData.js';
@@ -40,6 +40,20 @@ export const initialNavState = {
   playback: null,
   settingsValues: createDefaultSettings(),
   friendIds: [...initialFriendIds],
+  blockedIds: [],
+  friendsStatus: 'idle', // 'idle' | 'loading' | 'ready' | 'error' — see api/friendsApi.js
+  pendingSync: [], // outbox of { seq, op, contactId } for the background friends-API sync
+  pendingSyncSeq: 0,
+  pendingShares: [], // outbox of { seq, friendId, friendName, itemIds } for the websocket share send
+  pendingSharesSeq: 0,
+  qr: {
+    status: 'idle', // 'idle' | 'requesting' | 'displaying' | 'connected' | 'error'
+    qrId: null,
+    qrUrl: null,
+    wsUrl: null,
+    wsStatus: 'idle', // 'idle' | 'open' | 'closed'
+    lastPingAt: null,
+  },
   bixbyIndex: 0, // cycles through bixbyPhrases so repeat demos show something different
   toast: null,
   toastSeq: 0,
@@ -80,6 +94,49 @@ function reduce(state, action) {
       return addFriend(state, action.contactId);
     case 'REMOVE_FRIEND':
       return removeFriend(state, action.contactId);
+    case 'BLOCK_FRIEND':
+      return blockContact(state, action.contactId);
+    case 'UNBLOCK_FRIEND':
+      return unblockContact(state, action.contactId);
+    case 'FRIENDS_LOAD_START':
+      return { ...state, friendsStatus: 'loading' };
+    case 'FRIENDS_LOAD_SUCCESS':
+      return { ...state, friendsStatus: 'ready', friendIds: action.friendIds, blockedIds: action.blockedIds };
+    case 'FRIENDS_LOAD_ERROR':
+      return { ...state, friendsStatus: 'error' };
+    case 'FRIENDS_SYNC_DEQUEUE':
+      return { ...state, pendingSync: state.pendingSync.filter((entry) => entry.seq !== action.seq) };
+    case 'QR_REQUEST_START':
+      return { ...state, qr: { ...state.qr, status: 'requesting' } };
+    case 'QR_REQUEST_SUCCESS':
+      return { ...state, qr: { ...state.qr, status: 'displaying', qrId: action.qrId, qrUrl: action.qrUrl } };
+    case 'QR_REQUEST_ERROR':
+      return { ...state, qr: { ...state.qr, status: 'error' } };
+    case 'QR_STATUS_UPDATE': {
+      if (action.status !== 'connected') return state;
+      const next = { ...state, qr: { ...state.qr, status: 'connected', wsUrl: action.wsUrl } };
+      const closed = topOverlay(next)?.type === 'qr' ? closeOverlay(next) : next;
+      return showToast(closed, 'Device connected');
+    }
+    case 'QR_SOCKET_OPEN':
+      return { ...state, qr: { ...state.qr, wsStatus: 'open' } };
+    case 'QR_SOCKET_CLOSED':
+      return { ...state, qr: { ...state.qr, wsStatus: 'closed' } };
+    case 'QR_SOCKET_PING':
+      return { ...state, qr: { ...state.qr, lastPingAt: action.at } };
+    case 'WS_CONTENT_RECEIVED':
+      if (findOverlay(state, 'wsResult')) return state; // don't interrupt an in-progress selection
+      return {
+        ...state,
+        overlays: [...state.overlays, { type: 'wsResult', row: 1, col: 0, id: action.id, items: action.items, selectedIds: [] }],
+      };
+    case 'SHARE_SENT': {
+      const entry = state.pendingShares.find((e) => e.seq === action.seq);
+      const next = { ...state, pendingShares: state.pendingShares.filter((e) => e.seq !== action.seq) };
+      return entry ? showToast(next, `Content shared with ${entry.friendName}`) : next;
+    }
+    case 'SHOW_TOAST':
+      return showToast(state, action.message);
     case 'BIXBY_HEARD':
       return handleBixbyResult(state);
     case 'CLEAR_TOAST':
@@ -210,6 +267,7 @@ function activateMainItem(state, row, col) {
       return openPlayer(state, liveMedia(item));
     case 'apps':
     case 'appGrid':
+    case 'editorsChoice':
       // Bixby isn't a streaming app — it opens the voice-search overlay instead.
       return item.id === 'bixby' ? openOverlay(state, 'bixby') : openPlayer(state, appMedia(item));
     case 'categories':
@@ -260,6 +318,7 @@ const OVERLAY_INITIAL_FOCUS = {
   profile: () => ({ row: 0, col: 0, category: 0 }),
   bixby: () => ({ row: 0, col: 0 }), // just the Cancel button
   qr: () => ({ row: 0, col: 0 }), // just the Close button
+  friendConfirm: () => ({ row: 0, col: 0 }), // Remove / Block / Cancel
 };
 
 function openOverlay(state, type) {
@@ -273,6 +332,10 @@ function closeOverlay(state) {
     ...state,
     overlays: state.overlays.slice(0, -1),
     playback: closing.type === 'player' ? null : state.playback,
+    // Reopening the sidebar's QR icon should start a fresh request — but only if we're closing
+    // before a connection ever succeeded; a connected close (see QR_STATUS_UPDATE) must keep
+    // wsUrl/qrId alive since the socket hook (useQrSocket.js) depends on them persisting.
+    qr: closing.type === 'qr' && state.qr.status !== 'connected' ? { ...initialNavState.qr } : state.qr,
   };
 }
 
@@ -384,11 +447,17 @@ function cycleSetting(state, option) {
 
 /* ---- Profile (friends) ---- */
 
-const PROFILE_SECTION_COUNT = 2; // 0: Friends List, 1: Add Friends
+const PROFILE_SECTION_COUNT = 3; // 0: Friends List, 1: Add Friends, 2: Blocked
 
 const friendsList = (state) => profileContacts.filter((contact) => state.friendIds.includes(contact.id));
-const addableContacts = (state) => profileContacts.filter((contact) => !state.friendIds.includes(contact.id));
-const listForCategory = (state, category) => (category === 0 ? friendsList(state) : addableContacts(state));
+const addableContacts = (state) =>
+  profileContacts.filter((contact) => !state.friendIds.includes(contact.id) && !state.blockedIds.includes(contact.id));
+const blockedList = (state) => profileContacts.filter((contact) => state.blockedIds.includes(contact.id));
+const listForCategory = (state, category) => {
+  if (category === 0) return friendsList(state);
+  if (category === 1) return addableContacts(state);
+  return blockedList(state);
+};
 
 function profileCommand(state, overlay, command) {
   if (overlay.col === 0) {
@@ -423,28 +492,62 @@ function profileCommand(state, overlay, command) {
     case 'enter': {
       const contact = list[overlay.row];
       if (!contact) return state;
-      return overlay.category === 0 ? removeFriend(state, contact.id) : addFriend(state, contact.id);
+      if (overlay.category === 0) {
+        // Opens a Remove/Block/Cancel popup on top instead of acting immediately —
+        // see friendConfirmCommand.
+        return {
+          ...state,
+          overlays: [...state.overlays, { type: 'friendConfirm', row: 0, col: 0, contactId: contact.id, contactName: contact.name }],
+        };
+      }
+      return overlay.category === 1 ? addFriend(state, contact.id) : unblockContact(state, contact.id);
     }
     default:
       return state;
   }
 }
 
+// Records that a friends-API call needs to happen in the background (see
+// ProfileOverlay.jsx's pendingSync effect) — the local state below is already the
+// optimistic result, kept snappy for remote-control use; the API call just syncs it.
+function queueFriendsSync(state, op, contactId) {
+  const seq = state.pendingSyncSeq + 1;
+  return { ...state, pendingSync: [...state.pendingSync, { seq, op, contactId }], pendingSyncSeq: seq };
+}
+
 function addFriend(state, contactId) {
   const contact = profileContacts.find((entry) => entry.id === contactId);
   if (!contact || state.friendIds.includes(contactId)) return state;
   const next = { ...state, friendIds: [...state.friendIds, contactId] };
-  return clampProfileOverlay(showToast(next, `${contact.name} added to your friends`));
+  return clampProfileOverlay(queueFriendsSync(showToast(next, `${contact.name} added to your friends`), 'add', contactId));
 }
 
 function removeFriend(state, contactId) {
   const contact = profileContacts.find((entry) => entry.id === contactId);
   if (!contact) return state;
   const next = { ...state, friendIds: state.friendIds.filter((id) => id !== contactId) };
-  return clampProfileOverlay(showToast(next, `${contact.name} removed from your friends`));
+  return clampProfileOverlay(queueFriendsSync(showToast(next, `${contact.name} removed from your friends`), 'delete', contactId));
 }
 
-// After a friend is added/removed the other tab's list changes length; keep focus valid,
+function blockContact(state, contactId) {
+  const contact = profileContacts.find((entry) => entry.id === contactId);
+  if (!contact || state.blockedIds.includes(contactId)) return state;
+  const next = {
+    ...state,
+    friendIds: state.friendIds.filter((id) => id !== contactId),
+    blockedIds: [...state.blockedIds, contactId],
+  };
+  return clampProfileOverlay(queueFriendsSync(showToast(next, `${contact.name} blocked`), 'block', contactId));
+}
+
+function unblockContact(state, contactId) {
+  const contact = profileContacts.find((entry) => entry.id === contactId);
+  if (!contact) return state;
+  const next = { ...state, blockedIds: state.blockedIds.filter((id) => id !== contactId) };
+  return clampProfileOverlay(queueFriendsSync(showToast(next, `${contact.name} unblocked`), 'unblock', contactId));
+}
+
+// After a friend list changes the current tab's list changes length; keep focus valid,
 // falling back to the section tabs if the current list just became empty.
 function clampProfileOverlay(state) {
   const overlay = topOverlay(state);
@@ -453,6 +556,98 @@ function clampProfileOverlay(state) {
   if (list.length === 0) return updateTopOverlay(state, { col: 0, row: overlay.category });
   if (overlay.row >= list.length) return updateTopOverlay(state, { row: list.length - 1 });
   return state;
+}
+
+/* ---- Friend confirm (Remove / Block / Cancel) ---- */
+
+function friendConfirmCommand(state, overlay, command) {
+  switch (command) {
+    case 'up':
+    case 'down': {
+      const row = clamp(overlay.row + (command === 'up' ? -1 : 1), 0, 2);
+      return updateTopOverlay(state, { row });
+    }
+    case 'back':
+      return closeOverlay(state);
+    case 'enter': {
+      const popped = closeOverlay(state);
+      if (overlay.row === 0) return removeFriend(popped, overlay.contactId);
+      if (overlay.row === 1) return blockContact(popped, overlay.contactId);
+      return popped; // Cancel
+    }
+    default:
+      return state;
+  }
+}
+
+/* ---- Websocket incoming-share result (checkbox-select + share to a friend) ---- */
+
+// Mirrors bixbyResultCommand's shape (row 0: controls, row 1: tiles), except row 0 has two
+// controls (Share/Close) instead of one, and Enter on a tile toggles its checkbox rather than
+// opening a player.
+function wsResultCommand(state, overlay, command) {
+  const itemCount = overlay.items.length;
+  switch (command) {
+    case 'up':
+      return overlay.row === 1 ? updateTopOverlay(state, { row: 0, col: 0 }) : state;
+    case 'down':
+      return overlay.row === 0 && itemCount > 0 ? updateTopOverlay(state, { row: 1, col: 0 }) : state;
+    case 'left':
+      return overlay.col > 0 ? updateTopOverlay(state, { col: overlay.col - 1 }) : state;
+    case 'right': {
+      const max = overlay.row === 0 ? 1 : itemCount - 1; // row 0: Share(0)/Close(1); row 1: tiles
+      return overlay.col < max ? updateTopOverlay(state, { col: overlay.col + 1 }) : state;
+    }
+    case 'back':
+      return closeOverlay(state);
+    case 'enter': {
+      if (overlay.row === 0) {
+        if (overlay.col === 1) return closeOverlay(state); // Close
+        if (overlay.selectedIds.length === 0) return showToast(state, 'Select at least one item to share');
+        return { ...state, overlays: [...state.overlays, { type: 'shareTarget', row: 0, col: 0 }] };
+      }
+      const item = overlay.items[overlay.col];
+      if (!item) return state;
+      const selectedIds = overlay.selectedIds.includes(item.id)
+        ? overlay.selectedIds.filter((id) => id !== item.id)
+        : [...overlay.selectedIds, item.id];
+      return updateTopOverlay(state, { selectedIds });
+    }
+    default:
+      return state;
+  }
+}
+
+/* ---- Share target (pick one friend to share the selected items with) ---- */
+
+function shareTargetCommand(state, overlay, command) {
+  const friends = friendsList(state);
+  switch (command) {
+    case 'up':
+    case 'down': {
+      const row = clamp(overlay.row + (command === 'up' ? -1 : 1), 0, Math.max(0, friends.length - 1));
+      return updateTopOverlay(state, { row });
+    }
+    case 'back':
+      return closeOverlay(state); // back to wsResult, selection kept
+    case 'enter': {
+      const friend = friends[overlay.row];
+      if (!friend) return state;
+      const wsOverlay = state.overlays[state.overlays.length - 2]; // the wsResult beneath
+      const popped = closeOverlay(closeOverlay(state)); // pop shareTarget, then wsResult
+      const seq = popped.pendingSharesSeq + 1;
+      return {
+        ...popped,
+        pendingShares: [
+          ...popped.pendingShares,
+          { seq, friendId: friend.id, friendName: friend.name, itemIds: wsOverlay.selectedIds },
+        ],
+        pendingSharesSeq: seq,
+      };
+    }
+    default:
+      return state;
+  }
 }
 
 /* ---- QR code ---- */
@@ -578,6 +773,9 @@ const OVERLAY_HANDLERS = {
   search: searchCommand,
   settings: settingsCommand,
   profile: profileCommand,
+  friendConfirm: friendConfirmCommand,
+  wsResult: wsResultCommand,
+  shareTarget: shareTargetCommand,
   qr: qrCommand,
   bixby: bixbyCommand,
   bixbyResult: bixbyResultCommand,

@@ -30,3 +30,23 @@
 .debug__row span:first-child {
   color: rgba(125, 255, 184, 0.65);
 }
+
+.debug__button {
+  /* the debug panel itself is pointer-events:none (decorative HUD); re-enable it just here */
+  pointer-events: auto;
+  width: 100%;
+  margin-top: 0.8rem;
+  padding: 0.6rem 0.8rem;
+  border: 0.1rem solid rgba(0, 255, 140, 0.5);
+  border-radius: 0.4rem;
+  background: rgba(0, 255, 140, 0.12);
+  color: #7dffb8;
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.debug__button:hover {
+  background: rgba(0, 255, 140, 0.22);
+}

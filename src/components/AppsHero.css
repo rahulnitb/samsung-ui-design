@@ -1,0 +1,117 @@
+.apps-hero {
+  position: relative;
+  height: 27rem;
+  overflow: hidden;
+  background: radial-gradient(ellipse 90% 80% at 30% 20%, #123a5c 0%, #0a2038 45%, #051020 100%);
+}
+
+/* soft diagonal texture, consistent with the rest of the app's generated artwork */
+.apps-hero::before {
+  content: '';
+  position: absolute;
+  inset: -10%;
+  background: repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.03) 0 0.15rem, transparent 0.15rem 1.8rem);
+}
+
+.apps-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, #000 0%, rgba(0, 0, 0, 0.5) 30%, transparent 65%);
+}
+
+/* Abstract branded shapes (leaves/petal/ring), loosely echoing the illustrated
+ * artwork Samsung uses on this banner — generated, not a copy of any real asset. */
+.apps-hero__shapes {
+  position: absolute;
+  inset: 0;
+  opacity: 0.9;
+}
+
+.apps-hero__leaf {
+  position: absolute;
+  border-radius: 0 60% 0 60%;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.apps-hero__leaf--1 {
+  top: -6rem;
+  left: 8%;
+  width: 22rem;
+  height: 30rem;
+  transform: rotate(25deg);
+}
+
+.apps-hero__leaf--2 {
+  top: -3rem;
+  left: 16%;
+  width: 14rem;
+  height: 20rem;
+  background: rgba(255, 255, 255, 0.04);
+  transform: rotate(-10deg);
+}
+
+.apps-hero__petal {
+  position: absolute;
+  top: 2rem;
+  right: 22%;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50% 50% 50% 0;
+  background: linear-gradient(135deg, #ffd166, #06d6a0 60%, #1a7a5c);
+  opacity: 0.85;
+  transform: rotate(20deg);
+}
+
+.apps-hero__ring {
+  position: absolute;
+  top: 4rem;
+  right: 6%;
+  width: 16rem;
+  height: 16rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #3fb8e0, #1a3a6b 70%);
+  opacity: 0.9;
+}
+
+.apps-hero__dot {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.apps-hero__dot--1 {
+  width: 9rem;
+  height: 9rem;
+  bottom: -3rem;
+  right: 28%;
+}
+
+.apps-hero__dot--2 {
+  width: 5rem;
+  height: 5rem;
+  bottom: 6rem;
+  right: 14%;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.apps-hero__text {
+  position: relative;
+  z-index: 1;
+  max-width: 74rem;
+  padding: 6rem var(--gutter) 0 var(--content-left);
+}
+
+.apps-hero__title {
+  font-size: clamp(2.6rem, 3.4vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1.15;
+  text-shadow: 0 0.3rem 1.5rem rgba(0, 0, 0, 0.5);
+}
+
+.apps-hero__subtitle {
+  margin-top: 1.4rem;
+  font-size: 1.55rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}

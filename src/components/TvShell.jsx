@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
-import { useNavState } from '../navigation/NavigationContext.jsx';
+import { useNavDispatch, useNavState } from '../navigation/NavigationContext.jsx';
 import { getSettingValue, hasOverlay } from '../navigation/selectors.js';
+import { useFriendsSync } from '../hooks/useFriendsSync.js';
+import { useQrSocket } from '../hooks/useQrSocket.js';
 import Sidebar from './Sidebar.jsx';
 import ForYouPage from './ForYouPage.jsx';
 import LivePage from './LivePage.jsx';
@@ -8,9 +10,12 @@ import AppsPage from './AppsPage.jsx';
 import SearchOverlay from './SearchOverlay.jsx';
 import SettingsPanel from './SettingsPanel.jsx';
 import ProfileOverlay from './ProfileOverlay.jsx';
+import FriendConfirmPopup from './FriendConfirmPopup.jsx';
 import QRCodeOverlay from './QRCodeOverlay.jsx';
 import BixbyOverlay from './BixbyOverlay.jsx';
 import BixbyResultPopup from './BixbyResultPopup.jsx';
+import WsResultPopup from './WsResultPopup.jsx';
+import ShareTargetPopup from './ShareTargetPopup.jsx';
 import PlayerOverlay from './PlayerOverlay.jsx';
 import Toast from './Toast.jsx';
 import DebugOverlay from './DebugOverlay.jsx';
@@ -21,8 +26,12 @@ const PAGE_COMPONENTS = { forYou: ForYouPage, live: LivePage, apps: AppsPage };
 /** Top-level screen composition: sidebar, current page, overlays. */
 export default function TvShell() {
   const state = useNavState();
+  const dispatch = useNavDispatch();
   const reduceMotion = getSettingValue(state, 'reduceMotion') === 'On';
   const highContrast = getSettingValue(state, 'highContrastFocus') === 'On';
+
+  useFriendsSync(state, dispatch);
+  useQrSocket(state, dispatch);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -45,9 +54,12 @@ export default function TvShell() {
       <SearchOverlay />
       <SettingsPanel />
       <ProfileOverlay />
+      <FriendConfirmPopup />
       <QRCodeOverlay />
       <BixbyOverlay />
       <BixbyResultPopup />
+      <WsResultPopup />
+      <ShareTargetPopup />
       <PlayerOverlay />
       <Toast />
       {state.debug && <DebugOverlay />}

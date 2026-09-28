@@ -36,6 +36,16 @@ export default function HeroCarousel({ rowIndex }) {
       <div className="hero__art" aria-hidden="true" key={`art-${slide.id}`}>
         {slide.image && <img src={slide.image} alt="" />}
       </div>
+      {/* Same illustrated-shape language as the Apps/Live banners, tinted per slide —
+          but only as a fallback when there's no real key-art photo to compete with,
+          same "generated art XOR real image" rule the rest of the app already follows. */}
+      {!slide.image && (
+        <div className="hero__shapes" aria-hidden="true" key={`shapes-${slide.id}`}>
+          <span className="hero__leaf hero__leaf--1" />
+          <span className="hero__leaf hero__leaf--2" />
+          <span className="hero__ring" />
+        </div>
+      )}
       <div className="hero__scrim" aria-hidden="true" />
 
       <div className="hero__dots">

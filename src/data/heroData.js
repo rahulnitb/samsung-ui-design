@@ -1,3 +1,5 @@
+import { stockImage } from '../utils/stockImage.js';
+
 // Promo banner slides for the home screen hero: one full-bleed background per slide
 // with a large stylised title, a streaming-service tag and a CTA — like a show's own
 // key art. `palette` = [sky, glow, ground] and drives the generated landscape
@@ -14,7 +16,7 @@ export const heroSlides = [
     providerColor: '#3dc3ff',
     cta: 'Watch Now',
     palette: ['#3a2a12', '#ff9a3d', '#120a04'],
-    image: null,
+    image: stockImage('hero-wasteland', 1280, 720),
   },
   {
     id: 'hero-neon-circuit',
@@ -25,7 +27,7 @@ export const heroSlides = [
     providerColor: '#4d9bff',
     cta: 'Watch Now',
     palette: ['#050818', '#6a4dff', '#02030a'],
-    image: null,
+    image: stockImage('hero-neon-circuit', 1280, 720),
   },
   {
     id: 'hero-golden-coast',
@@ -36,7 +38,7 @@ export const heroSlides = [
     providerColor: '#d9d9d9',
     cta: 'Watch Now',
     palette: ['#2a1710', '#ffb15a', '#0d0603'],
-    image: null,
+    image: stockImage('hero-golden-coast', 1280, 720),
   },
   {
     id: 'hero-storm-watch',
@@ -47,6 +49,6 @@ export const heroSlides = [
     providerColor: '#ff3b4a',
     cta: 'Watch Live',
     palette: ['#071018', '#3aa0ff', '#020507'],
-    image: null,
+    image: stockImage('hero-storm-watch', 1280, 720),
   },
 ];

@@ -25,6 +25,19 @@
   height: 44%;
 }
 
+/* generic glyph fallback (no real logo available) — same footprint as the voice icon */
+.app-icon__glyph {
+  width: 46%;
+  height: 46%;
+}
+
+/* real brand logo (fetched into data/appData.js) — sized generously, since these
+ * are single-colour marks rather than the bolder text-initial fallback */
+.app-icon__brand-svg {
+  width: 56%;
+  height: 56%;
+}
+
 /* a slow "always listening" breathing glow, distinct from the flat app tiles beside it */
 .app-icon__badge--voice {
   animation: voice-breathe 2.6s ease-in-out infinite;
@@ -73,6 +86,67 @@
   max-width: none;
   overflow: visible;
   font-size: 1.15rem;
+}
+
+/* small square icons for the Apps page's "Recommended" / "Provided by Samsung" row */
+.app-icon--squircle .app-icon__badge {
+  width: 6.6rem;
+  height: 6.6rem;
+  border-radius: 1.6rem;
+}
+
+.app-icon--squircle .app-icon__label {
+  font-size: 1.6rem;
+}
+
+.app-icon--squircle .app-icon__label--long {
+  font-size: 1.1rem;
+}
+
+.app-icon--squircle {
+  width: 6.6rem;
+}
+
+/* names always show here (not just on focus), so they must wrap within their own
+ * slot instead of the "expand on focus" overflow used by the round launcher icons */
+.app-icon--squircle .app-icon__name {
+  max-width: 10rem;
+  overflow: visible;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.25;
+  font-size: 1.1rem;
+}
+
+/* group heading ("Recommended", "Provided by Samsung") above the first icon of a group */
+.app-icon__group-label {
+  position: absolute;
+  bottom: calc(100% + 1rem);
+  left: 0.1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--text-dim);
+  transition: color var(--dur) var(--ease);
+}
+
+.is-row-focused .app-icon__group-label {
+  color: var(--text);
+}
+
+/* a vertical rule marks the start of a new group sharing this row */
+.app-icon--group-start {
+  margin-left: 2.4rem;
+}
+
+.app-icon--group-start::before {
+  content: '';
+  position: absolute;
+  top: 0.6rem;
+  bottom: 2.4rem;
+  left: -1.2rem;
+  width: 0.1rem;
+  background: rgba(255, 255, 255, 0.14);
 }
 
 .app-icon--tile {

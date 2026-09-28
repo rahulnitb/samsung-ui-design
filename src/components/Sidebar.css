@@ -77,11 +77,42 @@
   transform: none;
 }
 
-/* Active page: the icon turns blue (like Home on the TV) */
+/* Active page: a solid blue circle behind the icon, matching the real Tizen sidebar.
+ * The pseudo-element sits on the (plain div) item itself, not the icon's <svg> —
+ * ::before on SVG content has unreliable support, so the highlight lives one level up. */
 .sidebar__item.is-active {
-  color: #4d9bff;
+  position: relative;
+}
+
+.sidebar__item.is-active::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  left: 0.45rem;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3aa0ff, #1560d8);
+}
+
+.sidebar__item.is-active .sidebar__icon,
+.sidebar__item.is-active .sidebar__avatar {
+  position: relative;
+  z-index: 1;
+  color: #fff;
 }
 
 .sidebar__item.is-active .sidebar__label {
   color: var(--text);
+}
+
+/* the focused (white pill) state already reads clearly on its own — don't fight it
+ * with the active-page highlight underneath */
+.sidebar__item.is-active.is-focused::before {
+  background: transparent;
+}
+
+.sidebar__item.is-active.is-focused .sidebar__icon,
+.sidebar__item.is-active.is-focused .sidebar__avatar {
+  color: inherit;
 }

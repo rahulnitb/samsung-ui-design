@@ -2,6 +2,7 @@ import { useNavState } from '../navigation/NavigationContext.jsx';
 import { isMainFocused, makeTarget } from '../navigation/selectors.js';
 import { PAGES } from '../navigation/layouts.js';
 import FocusIndicator from './FocusIndicator.jsx';
+import Icon from './Icon.jsx';
 import './TopNavigation.css';
 
 /** "For You / Live / Apps" pill. Rendered by each page at its own row index. */
@@ -22,6 +23,7 @@ export default function TopNavigation({ rowIndex, className = '' }) {
             className={`tab ${state.page === page.id ? 'is-active' : ''}`}
           >
             {page.label}
+            {page.id === 'live' && <Icon name="wifi" className="tab__icon" />}
           </FocusIndicator>
         ))}
       </div>

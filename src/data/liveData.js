@@ -1,3 +1,5 @@
+import { stockImage } from '../utils/stockImage.js';
+
 // Mock live channels. Programme slots are created relative to page load so that
 // progress bars and start/end times always look "live".
 const MINUTE = 60 * 1000;
@@ -12,6 +14,7 @@ const channel = (id, number, name, short, program, startedMinutesAgo, durationMi
   start: loadedAt - startedMinutesAgo * MINUTE,
   end: loadedAt - startedMinutesAgo * MINUTE + durationMinutes * MINUTE,
   palette,
+  image: stockImage(id, 640, 360),
 });
 
 export const liveCategories = [

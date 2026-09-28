@@ -2,6 +2,15 @@
   padding: 1.2rem var(--gutter) 0.5rem var(--content-left);
 }
 
+/* room above the icons for their "Recommended" / "Provided by Samsung" group labels,
+ * and extra gap so wrapped two-line names (e.g. "Samsung Education Hub") don't
+ * crowd their neighbours */
+.apps-featured .content-section__track {
+  gap: 2.6rem;
+  padding-top: 4rem;
+  padding-bottom: 1.2rem;
+}
+
 .apps-section__title {
   font-size: 1.9rem;
   font-weight: 600;
